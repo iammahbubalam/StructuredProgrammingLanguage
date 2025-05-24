@@ -1483,3 +1483,424 @@ int main() {
     return 0;
 }
 ```
+
+## Question 16
+
+### Part (a): Variable Name Validity
+
+Analyze which variable names are valid or invalid:
+
+| Variable | Validity | Reason |
+|----------|----------|---------|
+| `int_a` | **Valid** | Contains letters and underscore, follows C naming rules |
+| `_num` | **Valid** | Starts with underscore followed by letters (though reserved for system) |
+| `99p` | **Invalid** | Cannot start with digits in C |
+| `"my_val"` | **Invalid** | Double quotes not allowed in identifiers |
+
+### Part (b): Variable Value Computation
+
+Given ASCII codes: A=65, a=97, 0=48
+
+**Expression Analysis:**
+
+**(i) `float a = 101/7;`**
+```
+101/7 = 14 (integer division)
+Result: a = 14.0
+```
+
+**(ii) `float b = (float)(3%5);`**
+```
+3%5 = 3 (since 3 < 5)
+Cast to float: b = 3.0
+```
+
+**(iii) `float c = 21>43 || 6!=6;`**
+```
+21 > 43 → false (0)
+6 != 6 → false (0)  
+false || false → false (0)
+Result: c = 0.0
+```
+
+**(iv) `double result = 12 + (1 * '3');`**
+```
+ASCII of '3' = 51
+1 * 51 = 51
+12 + 51 = 63
+Result: result = 63.0
+```
+
+### Part (c): Code Output Analysis
+
+**Given Code:**
+```c
+int num; 
+scanf("%d", &num); 
+if (num % 2 != 0) { 
+    printf("Mashrafe\n"); 
+} 
+if (num < 100) { 
+    printf("Shakib\n"); 
+} else if (num >= 100) { 
+    printf("Mahmudullah\n"); 
+} 
+if (num >= 0 && num < 5) { 
+    printf("Imrul\n"); 
+} else if (num >= 0 && num <= 49) { 
+    printf("Tamim\n"); 
+} else { 
+    printf("Rubel\n"); 
+} 
+```
+
+**Case (i): Input = 2.3**
+- `scanf("%d", &num)` reads integer part: `num = 2`
+- `2 % 2 != 0` → false, no "Mashrafe"
+- `2 < 100` → true, prints "Shakib"
+- `2 >= 0 && 2 < 5` → true, prints "Imrul"
+
+**Output:** `Shakib\nImrul\n`
+
+**Case (ii): Input = 127**
+- `num = 127`
+- `127 % 2 != 0` → true, prints "Mashrafe"
+- `127 < 100` → false, `127 >= 100` → true, prints "Mahmudullah"
+- `127 >= 0 && 127 < 5` → false
+- `127 >= 0 && 127 <= 49` → false
+- Else condition: prints "Rubel"
+
+**Output:** `Mashrafe\nMahmudullah\nRubel\n`
+
+---
+
+## Question 17: Switch Statement Analysis
+
+### Part (a): Code Trace
+
+**Given Code:**
+```c
+int a,b,c; 
+scanf("%d%d%d",&a,&b,&c); 
+int result=a--/b++; 
+switch(a+b){ 
+case 1:  
+    result+=a/c*2; 
+    b++; 
+case 2:  
+case 3: 
+    result=a*c/b; 
+    a++; 
+case 4: break; 
+    a=2; 
+default: result=5;                
+} 
+printf("%d %d %d %d", a,b,c,result); 
+```
+
+**Example with input: a=5, b=2, c=3**
+
+**Step-by-step execution:**
+1. `result = a--/b++` → `result = 5/2 = 2`, then `a=4, b=3`
+2. `switch(a+b)` → `switch(4+3=7)`
+3. No case matches 7, goes to `default`
+4. `result = 5`
+
+**Final values:** `a=4, b=3, c=3, result=5`
+**Output:** `4 3 3 5`
+
+---
+
+## Question 18
+
+### Part (a): Switch to If-Else Conversion
+
+**Converted Code:**
+```c
+int a,b,c; 
+scanf("%d%d%d",&a,&b,&c); 
+int result=a--/b++; 
+int switchValue = a+b;
+
+if(switchValue == 1) {
+    result += a/c*2; 
+    b++; 
+    // Fall through to case 2/3
+    result = a*c/b; 
+    a++; 
+} else if(switchValue == 2 || switchValue == 3) {
+    result = a*c/b; 
+    a++; 
+} else if(switchValue == 4) {
+    // Do nothing (break equivalent)
+} else {
+    result = 5; 
+}
+printf("%d %d %d %d", a,b,c,result); 
+```
+
+### Part (b): Loop Trace
+
+**Original Code (with corrections):**
+```c
+int start=105, end=112, count=0; 
+for(int i=end; i>=start; i--){ 
+    if(end%2 != 0){ 
+        count++; 
+        start++; 
+        end += 2;  // Corrected from end+2
+    } else { 
+        end--; 
+        start += 1;  // Corrected from start+1
+    } 
+} 
+```
+
+**Trace Table:**
+
+| Iteration | i | start | end | count | Condition | Action |
+|-----------|---|-------|-----|-------|-----------|---------|
+| 1 | 112 | 105 | 112 | 0 | 112%2==0 | end--, start++ → end=111, start=106 |
+| 2 | 111 | 106 | 111 | 0 | 111%2!=0 | count++, start++, end+=2 → count=1, start=107, end=113 |
+| 3 | 110 | 107 | 113 | 1 | 113%2!=0 | count++, start++, end+=2 → count=2, start=108, end=115 |
+| ... | ... | ... | ... | ... | ... | ... |
+
+---
+
+## Question 19
+
+### Part (a): 'M' Pattern Program
+
+**Algorithm:**
+- Print '*' at first and last columns
+- Print '*' on main diagonal (upper half)
+- Print '*' on anti-diagonal (upper half)
+
+```c
+#include <stdio.h>
+
+int main() {
+    int n;
+    printf("Enter n: ");
+    scanf("%d", &n);
+    
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            if(j == 0 || j == n-1 || 
+               (i == j && i <= n/2) || 
+               (i + j == n-1 && i <= n/2)) {
+                printf("*");
+            } else {
+                printf(" ");
+            }
+        }
+        printf("\n");
+    }
+    return 0;
+}
+```
+
+### Part (b): Loop Replacement
+
+**Original:**
+```c
+int a=10, b=20, count=0; 
+for(int i=b; i>=a; i--){ 
+    for(int j=a; j<=b; j++){ 
+        printf("%d ", j); 
+    } 
+    if(b%2 != 0){           
+        printf("%d \n", a); 
+    } else { 
+        printf("%d \n", b); 
+    } 
+} 
+```
+
+**Converted (while + do-while):**
+```c
+int a=10, b=20, count=0; 
+int i = b;
+while(i >= a) {
+    int j = a;
+    do {
+        printf("%d ", j);
+        j++;
+    } while(j <= b);
+    
+    if(b % 2 != 0) {
+        printf("%d \n", a);
+    } else {
+        printf("%d \n", b);
+    }
+    i--;
+}
+```
+
+---
+
+## Question 20
+
+### Part (a): Flowchart for Factorial Code
+
+```mermaid
+flowchart TD
+    A[START] --> B[Input n]
+    B --> C{n <= 0?}
+    C -->|YES| D[Print "Enter a +ve integer"]
+    C -->|NO| E[fact = 1, i = 1]
+    D --> F[END]
+    E --> G[fact *= i]
+    G --> H[i++]
+    H --> I{i <= n?}
+    I -->|YES| G
+    I -->|NO| J[Print factorial]
+    J --> F
+```
+
+### Part (b): Bank Balance Filter Program
+
+```c
+#include <stdio.h>
+
+int main() {
+    int n;
+    printf("Enter number of clients: ");
+    scanf("%d", &n);
+    
+    double balances[100];  // Fixed size array
+    
+    // Input all balances
+    printf("Enter balances:\n");
+    for(int i = 0; i < n; i++) {
+        printf("Client %d: ", i+1);
+        scanf("%lf", &balances[i]);
+    }
+    
+    // Display only valid balances (>= 500.00)
+    printf("\nValid balances (>= 500.00 taka):\n");
+    int count = 0;
+    for(int i = 0; i < n; i++) {
+        if(balances[i] >= 500.00) {
+            printf("Client %d: %.2lf taka\n", i+1, balances[i]);
+            count++;
+        }
+    }
+    
+    if(count == 0) {
+        printf("No valid balances found.\n");
+    }
+    
+    return 0;
+}
+```
+
+---
+
+## Question 21
+
+### Part (a): Manual Trace of Array Code
+
+**Given Code:**
+```c
+int ara[5] = {8, 6, 2, 4, 7};  
+for(int i = 1; i < 5; i += 2){ 
+   ara[i] = 3 * ara[i - 1];  
+} 
+for(int i = 1; i < 5; i++){ 
+   if(i % 2 == 0){ 
+      ara[i] = i * 4 + ara[i-1]; 
+   } 
+} 
+```
+
+**Initial State:**
+```
+ara[0] = 8, ara[1] = 6, ara[2] = 2, ara[3] = 4, ara[4] = 7
+```
+
+**First Loop Trace (i += 2):**
+
+| Step | i | Condition | ara[i-1] | Calculation | New ara[i] | Array State |
+|------|---|-----------|----------|-------------|------------|-------------|
+| Initial | - | - | - | - | - | {8, 6, 2, 4, 7} |
+| 1 | 1 | i < 5 ✓ | ara[0] = 8 | 3 × 8 = 24 | ara[1] = 24 | {8, 24, 2, 4, 7} |
+| 2 | 3 | i < 5 ✓ | ara[2] = 2 | 3 × 2 = 6 | ara[3] = 6 | {8, 24, 2, 6, 7} |
+| 3 | 5 | i < 5 ✗ | - | Loop ends | - | {8, 24, 2, 6, 7} |
+
+**Second Loop Trace (i++):**
+
+| Step | i | Condition | i % 2 == 0? | ara[i-1] | Calculation | New ara[i] | Array State |
+|------|---|-----------|-------------|----------|-------------|------------|-------------|
+| Start | - | - | - | - | - | - | {8, 24, 2, 6, 7} |
+| 1 | 1 | i < 5 ✓ | 1 % 2 = 1 ✗ | - | Skip | - | {8, 24, 2, 6, 7} |
+| 2 | 2 | i < 5 ✓ | 2 % 2 = 0 ✓ | ara[1] = 24 | 2×4 + 24 = 32 | ara[2] = 32 | {8, 24, 32, 6, 7} |
+| 3 | 3 | i < 5 ✓ | 3 % 2 = 1 ✗ | - | Skip | - | {8, 24, 32, 6, 7} |
+| 4 | 4 | i < 5 ✓ | 4 % 2 = 0 ✓ | ara[3] = 6 | 4×4 + 6 = 22 | ara[4] = 22 | {8, 24, 32, 6, 22} |
+| 5 | 5 | i < 5 ✗ | - | Loop ends | - | - | {8, 24, 32, 6, 22} |
+
+**Final Result:** `ara = {8, 24, 32, 6, 22}`
+
+### Part (b): Manual Trace of 2D Array Sum Code
+
+**Given Code:**
+```c
+int row, col, sum = 0; 
+int A[][3] = {{1,2,3}, {11,5,6}, {12,7,9}, {8,13,4}}; 
+for(row=0; row<4; row++){ 
+   for(col=0; col<3; col++){ 
+      if(col > row) { 
+          sum += A[row][col]; 
+      } 
+   } 
+} 
+```
+
+**Matrix A Visualization:**
+```
+     col: 0   1   2
+row 0:    1   2   3
+row 1:   11   5   6  
+row 2:   12   7   9
+row 3:    8  13   4
+```
+
+**Complete Execution Trace:**
+
+| Step | row | col | col > row? | A[row][col] | Action | sum | Comment |
+|------|-----|-----|------------|-------------|---------|-----|---------|
+| Initial | - | - | - | - | - | 0 | Starting value |
+| 1 | 0 | 0 | 0 > 0 ✗ | A[0][0] = 1 | Skip | 0 | - |
+| 2 | 0 | 1 | 1 > 0 ✓ | A[0][1] = 2 | sum += 2 | 2 | Add upper triangle element |
+| 3 | 0 | 2 | 2 > 0 ✓ | A[0][2] = 3 | sum += 3 | 5 | Add upper triangle element |
+| 4 | 1 | 0 | 0 > 1 ✗ | A[1][0] = 11 | Skip | 5 | - |
+| 5 | 1 | 1 | 1 > 1 ✗ | A[1][1] = 5 | Skip | 5 | - |
+| 6 | 1 | 2 | 2 > 1 ✓ | A[1][2] = 6 | sum += 6 | 11 | Add upper triangle element |
+| 7 | 2 | 0 | 0 > 2 ✗ | A[2][0] = 12 | Skip | 11 | - |
+| 8 | 2 | 1 | 1 > 2 ✗ | A[2][1] = 7 | Skip | 11 | - |
+| 9 | 2 | 2 | 2 > 2 ✗ | A[2][2] = 9 | Skip | 11 | - |
+| 10 | 3 | 0 | 0 > 3 ✗ | A[3][0] = 8 | Skip | 11 | - |
+| 11 | 3 | 1 | 1 > 3 ✗ | A[3][1] = 13 | Skip | 11 | - |
+| 12 | 3 | 2 | 2 > 3 ✗ | A[3][2] = 4 | Skip | 11 | - |
+
+**Upper Triangle Elements Added:**
+- A[0][1] = 2
+- A[0][2] = 3  
+- A[1][2] = 6
+
+**Final Result:** `sum = 11`
+
+**Pattern Analysis:** The code sums all elements in the upper triangle of the matrix (where column index > row index).
+
+---
+
+## Summary
+
+This test covers fundamental C programming concepts including:
+- Variable naming conventions
+- Data type operations and type casting
+- Control structures (if-else, switch, loops)
+- Array manipulation (1D and 2D)
+- Code tracing and debugging
+- Pattern programming
+- Flow control conversion between different structures
