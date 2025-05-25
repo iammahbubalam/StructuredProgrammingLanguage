@@ -1,6 +1,6 @@
 # Structured Programming Language - Problem Set
 
-This document contains 100 programming problems organized by difficulty level (40 Easy, 40 Medium, 20 Hard) to help students practice concepts covered in the C programming course.
+This document contains 110 programming problems organized by difficulty level (40 Easy, 40 Medium, 20 Hard) to help students practice concepts covered in the C programming course.
 
 ## Easy Problems (40)
 
